@@ -14,7 +14,7 @@ h1{font-size:clamp(29px,6vw,48px);font-weight:normal;margin:10px 0 5px}header p{
 .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:18px 0 12px}input,select,button,textarea{font:14px Arial,sans-serif}input,select,textarea{background:white;border:1px solid var(--line);border-radius:9px;padding:11px;color:var(--ink)}#search{flex:1;min-width:170px}button{border:0;border-radius:9px;padding:11px 14px;cursor:pointer}.primary{background:var(--maroon);color:white}.secondary{background:#f0e4d1;color:var(--deep)}
 .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 20px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted)}.tab.active{background:var(--maroon);color:white;border-color:var(--maroon)}
 .section-title{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;margin:25px 0 10px}.section-title h2{font-size:22px;font-weight:normal;margin:0;color:var(--maroon)}.section-title small{font:12px Arial,sans-serif;color:var(--muted)}
-.task{display:grid;grid-template-columns:24px 76px 1fr auto;gap:11px;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px;margin:8px 0}.task input[type=checkbox]{width:18px;height:18px;margin-top:4px;accent-color:var(--green);padding:0}.task-date{font:700 11px/1.5 Arial,sans-serif;color:var(--maroon);background:var(--rose);border-radius:8px;padding:7px 4px;text-align:center}.task h3{font-size:16px;font-weight:normal;margin:0 0 4px}.task p{font:13px/1.5 Arial,sans-serif;color:var(--muted);margin:0;white-space:pre-line}.tag{font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.4px;border-radius:20px;padding:5px 7px;background:#f1e8d8;color:#73592c;white-space:nowrap}.task.done h3{text-decoration:line-through;color:#8b8984}.task.done{opacity:.72}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.task{display:grid;grid-template-columns:24px 76px 1fr auto;gap:11px;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px;margin:8px 0}.task input[type=checkbox]{width:18px;height:18px;margin-top:4px;accent-color:var(--green);padding:0}.task-date{font:700 11px/1.5 Arial,sans-serif;color:var(--maroon);background:var(--rose);border-radius:8px;padding:7px 4px;text-align:center}.task h3{font-size:16px;font-weight:normal;margin:0 0 4px}.task p{font:13px/1.5 Arial,sans-serif;color:var(--muted);margin:0;white-space:pre-line}.tag{font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.4px;border-radius:20px;padding:5px 7px;background:#f1e8d8;color:#73592c;white-space:nowrap}.task.done h3{text-decoration:line-through;color:#8b8984}.task.done{opacity:.72}.task-tools{display:flex;flex-direction:column;align-items:flex-end;gap:7px}.edit-task{font:11px Arial,sans-serif;padding:6px 9px;background:#f0e4d1;color:var(--deep)}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
 #adminPanel{display:none;background:white;border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}#adminPanel h2{font-weight:normal;color:var(--maroon);margin-top:0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid .full{grid-column:1/-1}textarea{width:100%;min-height:65px}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#status{font:12px Arial,sans-serif;color:var(--muted)}footer{text-align:center;color:var(--muted);font:12px Arial,sans-serif;padding:22px}
 @media(max-width:600px){.task{grid-template-columns:22px 62px 1fr;gap:8px;padding:10px}.task .tag{grid-column:3;justify-self:start}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.stat{padding:10px 4px}.stat strong{font-size:22px}}
 </style>
@@ -26,9 +26,9 @@ h1{font-size:clamp(29px,6vw,48px);font-weight:normal;margin:10px 0 5px}header p{
 <section class="stats"><div class="stat"><strong id="totalCount">0</strong><span>Total tasks</span></div><div class="stat"><strong id="doneCount">0</strong><span>Completed</span></div><div class="stat"><strong id="remainingCount">0</strong><span>Pending</span></div></section>
 <div class="toolbar"><input id="search" type="search" placeholder="Search tasks…"><select id="categoryFilter"><option value="">All categories</option></select><select id="statusFilter"><option value="all">All tasks</option><option value="pending">Pending</option><option value="done">Completed</option></select><button class="secondary" id="loginBtn">Owner sign-in</button><span id="status">Connecting…</span></div>
 <div class="tabs"><button class="tab active" data-view="timeline">Timeline</button><button class="tab" data-view="pending">Pending / To-do</button><button class="tab" data-view="done">Completed</button><button class="tab" data-view="all">All tasks</button></div>
-<section id="adminPanel"><h2>Add a task</h2><form id="taskForm"><div class="formgrid">
+<section id="adminPanel"><h2 id="formHeading">Add a task</h2><form id="taskForm"><input type="hidden" id="editingTaskId"><div class="formgrid">
 <input id="taskTitle" class="full" required placeholder="Task title — e.g. Finalize invitation wording"><input id="taskDate" type="date" required><select id="taskCategory"><option>Family &amp; planning</option><option>Rituals &amp; ceremony</option><option>Invitations</option><option>Gold &amp; jewellery</option><option>Outfits</option><option>Venue &amp; vendors</option><option>Travel &amp; accommodation</option><option>Food &amp; hospitality</option><option>Photography</option><option>Reception</option><option>Wedding day</option><option>Payments</option><option>Other</option></select>
-<input id="taskOwner" placeholder="Responsible person / family"><input id="taskDue" type="date" aria-label="Optional deadline"><textarea id="taskNotes" class="full" placeholder="Notes (optional)"></textarea></div><div class="admin-actions"><button class="primary" type="submit">Add task</button><button class="secondary" type="button" id="exportBtn">Export backup</button></div></form></section>
+<input id="taskOwner" placeholder="Responsible person / family"><input id="taskDue" type="date" aria-label="Optional deadline"><textarea id="taskNotes" class="full" placeholder="Notes (optional)"></textarea></div><div class="admin-actions"><button class="primary" type="submit" id="saveTaskBtn">Add task</button><button class="secondary" type="button" id="cancelEditBtn" hidden>Cancel edit</button><button class="secondary" type="button" id="exportBtn">Export backup</button></div></form></section>
 <div id="taskList"></div><footer>Made with love, managed together. ♡</footer></main>
 <script>
 const firebaseConfig = {
@@ -91,8 +91,9 @@ function render(){
    const due=t.due?'<br><span style="font-weight:normal">Due '+fmtDate(t.due)+'</span>':"";
    const owner=t.owner?" · "+esc(t.owner):"";
    const notes=t.notes?"\n"+esc(t.notes):"";
-   return head+'<article class="task '+(t.done?"done":"")+'"><input type="checkbox" data-check="'+esc(t.id)+'" aria-label="Mark complete" '+(t.done?"checked":"")+' '+(isOwner?"":"disabled")+'><div class="task-date">'+fmtDate(t.date)+due+'</div><div><h3>'+esc(t.title)+'</h3><p>'+esc(t.category||"Other")+owner+notes+'</p></div><span class="tag">'+(t.done?"Completed":"Pending")+'</span></article>';
+   return head+'<article class="task '+(t.done?"done":"")+'"><input type="checkbox" data-check="'+esc(t.id)+'" aria-label="Mark complete" '+(t.done?"checked":"")+' '+(isOwner?"":"disabled")+'><div class="task-date">'+fmtDate(t.date)+due+'</div><div><h3>'+esc(t.title)+'</h3><p>'+esc(t.category||"Other")+owner+notes+'</p></div><div class="task-tools"><span class="tag">'+(t.done?"Completed":"Pending")+'</span>'+(isOwner?'<button type="button" class="edit-task" data-edit="'+esc(t.id)+'">Edit</button>':'')+'</div></article>';
  }).join("");
+ list.querySelectorAll("[data-edit]").forEach(el=>el.addEventListener("click",()=>editTask(el.dataset.edit)));
  list.querySelectorAll("[data-check]").forEach(el=>el.addEventListener("change",async()=>{
    if(!isOwner)return;
    const t=tasks.find(x=>x.id===el.dataset.check);
@@ -108,11 +109,48 @@ async function persist(){
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render();}));
 ["search","categoryFilter","statusFilter"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+function resetTaskForm(){
+ $("taskForm").reset();
+ $("editingTaskId").value="";
+ $("formHeading").textContent="Add a task";
+ $("saveTaskBtn").textContent="Add task";
+ $("cancelEditBtn").hidden=true;
+}
+function editTask(id){
+ if(!isOwner)return;
+ const t=tasks.find(item=>item.id===id);
+ if(!t)return;
+ $("editingTaskId").value=t.id;
+ $("taskTitle").value=t.title||"";
+ $("taskDate").value=t.date||"";
+ $("taskDue").value=t.due||"";
+ const category=$("taskCategory");
+ if(t.category&&!Array.from(category.options).some(o=>o.value===t.category)){
+   const option=document.createElement("option");option.value=t.category;option.textContent=t.category;category.appendChild(option);
+ }
+ category.value=t.category||"Other";
+ $("taskOwner").value=t.owner||"";
+ $("taskNotes").value=t.notes||"";
+ $("formHeading").textContent="Edit task";
+ $("saveTaskBtn").textContent="Save changes";
+ $("cancelEditBtn").hidden=false;
+ $("adminPanel").scrollIntoView({behavior:"smooth",block:"start"});
+ $("taskTitle").focus();
+}
+$("cancelEditBtn").addEventListener("click",resetTaskForm);
 $("taskForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!isOwner)return alert("Please sign in as the owner first.");
- tasks.push({id:crypto.randomUUID(),title:$("taskTitle").value.trim(),date:$("taskDate").value,due:$("taskDue").value,category:$("taskCategory").value,owner:$("taskOwner").value.trim(),notes:$("taskNotes").value.trim(),done:false});
- await persist();e.target.reset();render();
+ const id=$("editingTaskId").value;
+ const updated={title:$("taskTitle").value.trim(),date:$("taskDate").value,due:$("taskDue").value,category:$("taskCategory").value,owner:$("taskOwner").value.trim(),notes:$("taskNotes").value.trim()};
+ if(id){
+   const index=tasks.findIndex(t=>t.id===id);
+   if(index<0)return alert("This task could not be found. Please refresh and try again.");
+   tasks[index]={...tasks[index],...updated};
+ }else{
+   tasks.push({id:crypto.randomUUID(),...updated,done:false});
+ }
+ await persist();resetTaskForm();render();
 });
 $("exportBtn").addEventListener("click",()=>{
  const a=document.createElement("a");

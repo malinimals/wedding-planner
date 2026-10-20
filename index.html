@@ -24,10 +24,10 @@ h1{font-size:clamp(29px,6vw,48px);font-weight:normal;margin:10px 0 5px}header p{
 <main class="wrap">
 <div class="notice" id="notice">Connecting to the wedding planner…</div>
 <section class="stats"><div class="stat"><strong id="totalCount">0</strong><span>Total tasks</span></div><div class="stat"><strong id="doneCount">0</strong><span>Completed</span></div><div class="stat"><strong id="remainingCount">0</strong><span>Pending</span></div></section>
-<div class="toolbar"><input id="search" type="search" placeholder="Search tasks…"><select id="categoryFilter"><option value="">All categories</option></select><select id="statusFilter"><option value="all">All tasks</option><option value="pending">Pending</option><option value="done">Completed</option></select><button class="secondary" id="loginBtn">Owner sign-in</button><span id="status">Connecting…</span></div>
+<div class="toolbar"><input id="search" type="search" placeholder="Search tasks…"><select id="categoryFilter"><option value="">All categories</option></select><select id="sideFilter" aria-label="Filter by family side"><option value="">Both sides · all tasks</option><option value="groom">Groom side</option><option value="bride">Bride side</option><option value="both">Shared / both sides</option><option value="unassigned">Side not assigned</option></select><select id="statusFilter"><option value="all">All tasks</option><option value="pending">Pending</option><option value="done">Completed</option></select><button class="secondary" id="loginBtn">Owner sign-in</button><span id="status">Connecting…</span></div>
 <div class="tabs"><button class="tab active" data-view="timeline">Timeline</button><button class="tab" data-view="pending">Pending / To-do</button><button class="tab" data-view="done">Completed</button><button class="tab" data-view="all">All tasks</button></div>
 <section id="adminPanel"><h2 id="formHeading">Add a task</h2><form id="taskForm"><input type="hidden" id="editingTaskId"><div class="formgrid">
-<input id="taskTitle" class="full" required placeholder="Task title — e.g. Finalize invitation wording"><input id="taskDate" type="date" required><select id="taskCategory"><option>Family &amp; planning</option><option>Rituals &amp; ceremony</option><option>Invitations</option><option>Gold &amp; jewellery</option><option>Outfits</option><option>Venue &amp; vendors</option><option>Travel &amp; accommodation</option><option>Food &amp; hospitality</option><option>Photography</option><option>Reception</option><option>Wedding day</option><option>Payments</option><option>Other</option></select>
+<input id="taskTitle" class="full" required placeholder="Task title — e.g. Finalize invitation wording"><select id="taskTiming" aria-label="When do you plan to do this?"><option value="date">Exact date</option><option value="month">Planned month</option><option value="later">Not decided yet</option></select><input id="taskDate" type="date" aria-label="Exact date"><select id="taskMonth" aria-label="Planned month" hidden><option value="2026-10">October 2026</option><option value="2026-11">November 2026</option><option value="2026-12">December 2026</option><option value="2027-01">January 2027</option><option value="2027-02">February 2027</option><option value="2027-03">March 2027</option><option value="2027-04">April 2027</option><option value="2027-05">May 2027</option><option value="2027-06">June 2027</option><option value="2027-07">July 2027</option><option value="2027-08">August 2027</option><option value="2027-09">September 2027</option><option value="2027-10">October 2027</option><option value="2027-11">November 2027</option><option value="2027-12">December 2027</option></select><select id="taskSide" aria-label="Which side is this task for?"><option value="unassigned">Side not assigned</option><option value="groom">Groom side</option><option value="bride">Bride side</option><option value="both">Shared / both sides</option></select><select id="taskCategory"><option>Family &amp; planning</option><option>Rituals &amp; ceremony</option><option>Invitations</option><option>Gold &amp; jewellery</option><option>Outfits</option><option>Venue &amp; vendors</option><option>Travel &amp; accommodation</option><option>Food &amp; hospitality</option><option>Photography</option><option>Reception</option><option>Wedding day</option><option>Payments</option><option>Other</option></select>
 <input id="taskOwner" placeholder="Responsible person / family"><input id="taskDue" type="date" aria-label="Optional deadline"><textarea id="taskNotes" class="full" placeholder="Notes (optional)"></textarea></div><div class="admin-actions"><button class="primary" type="submit" id="saveTaskBtn">Add task</button><button class="secondary" type="button" id="cancelEditBtn" hidden>Cancel edit</button><button class="secondary" type="button" id="exportBtn">Export backup</button></div></form></section>
 <div id="taskList"></div><footer>Made with love, managed together. ♡</footer></main>
 <script>
@@ -61,6 +61,11 @@ let view="timeline",isOwner=false,db=null,auth=null,provider=null,cloudReady=fal
 const $=id=>document.getElementById(id);
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){console.warn("Local save unavailable",e)}}
 function fmtDate(s){if(!s)return"DATE TBC";return new Date(s+"T12:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short"}).toUpperCase()}
+function monthLabel(value){if(!value)return"Date to be confirmed";const [y,m]=value.split("-").map(Number);return new Date(y,m-1,1).toLocaleDateString("en-IN",{month:"long",year:"numeric"})}
+function taskTiming(t){if(t.timingType==="month"&&t.plannedMonth)return t.plannedMonth;if(t.timingType==="later")return"";return t.date||""}
+function taskSide(t){if(["groom","bride","both","unassigned"].includes(t.side))return t.side;const owner=String(t.owner||"").toLowerCase(),title=String(t.title||"").toLowerCase();if(owner.includes("groom")||title.startsWith("ajith -")||title.startsWith("ajith "))return"groom";if(owner.includes("bride")||title.startsWith("malini -")||title.startsWith("malini "))return"bride";return owner?"both":"unassigned"}
+function sideLabel(side){return ({groom:"Groom side",bride:"Bride side",both:"Shared / both sides",unassigned:"Side not assigned"})[side]||"Side not assigned"}
+function updateTimingFields(){const mode=$("taskTiming").value;$("taskDate").hidden=mode!=="date";$("taskDate").required=mode==="date";$("taskMonth").hidden=mode!=="month";}
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function setStatus(s){$("status").textContent=s}
 function render(){
@@ -71,27 +76,31 @@ function render(){
  const cats=[...new Set(tasks.map(t=>t.category).filter(Boolean))].sort();
  $("categoryFilter").innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
  $("categoryFilter").value=cats.includes(old)?old:"";
- const q=$("search").value.toLowerCase(),cat=$("categoryFilter").value,st=$("statusFilter").value;
- const arr=tasks.filter(t=>(!q||(`${t.title||""} ${t.notes||""} ${t.owner||""} ${t.category||""}`).toLowerCase().includes(q))&&(!cat||t.category===cat)&&(st==="all"||(st==="done"?t.done:!t.done))&&(view==="all"||(view==="pending"?!t.done:view==="done"?t.done:true)));
- arr.sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999"));
+ const q=$("search").value.toLowerCase(),cat=$("categoryFilter").value,side=$("sideFilter").value,st=$("statusFilter").value;
+ const arr=tasks.filter(t=>(!q||(`${t.title||""} ${t.notes||""} ${t.owner||""} ${t.category||""}`).toLowerCase().includes(q))&&(!cat||t.category===cat)&&(!side||taskSide(t)===side)&&(st==="all"||(st==="done"?t.done:!t.done))&&(view==="all"||(view==="pending"?!t.done:view==="done"?t.done:true)));
+ arr.sort((a,b)=>(taskTiming(a)||"9999-99").localeCompare(taskTiming(b)||"9999-99"));
  let last="";
  const list=$("taskList");
  if(!arr.length){list.innerHTML='<div class="empty">No tasks match your filters.</div>';return;}
  list.innerHTML=arr.map(t=>{
-   const month=t.date?new Date(t.date+"T12:00:00").toLocaleDateString("en-IN",{month:"long",year:"numeric"}):"Date to be confirmed";
+   const timing=taskTiming(t);
+   const month=t.timingType==="month"&&t.plannedMonth?monthLabel(t.plannedMonth):(timing?monthLabel(timing.slice(0,7)):"Date to be confirmed");
    let head="";
    if(view==="timeline"&&month!==last){
      const count=arr.filter(x=>{
-       const m=x.date?new Date(x.date+"T12:00:00").toLocaleDateString("en-IN",{month:"long",year:"numeric"}):"Date to be confirmed";
+       const xt=taskTiming(x);
+       const m=x.timingType==="month"&&x.plannedMonth?monthLabel(x.plannedMonth):(xt?monthLabel(xt.slice(0,7)):"Date to be confirmed");
        return m===month;
      }).length;
      head='<div class="section-title"><h2>'+esc(month)+'</h2><small>'+count+' tasks</small></div>';
      last=month;
    }
    const due=t.due?'<br><span style="font-weight:normal">Due '+fmtDate(t.due)+'</span>':"";
+   const dateDisplay=t.timingType==="month"&&t.plannedMonth?monthLabel(t.plannedMonth).toUpperCase():t.timingType==="later"?"DATE TBC":fmtDate(t.date);
    const owner=t.owner?" · "+esc(t.owner):"";
+   const sideText=sideLabel(taskSide(t));
    const notes=t.notes?"\n"+esc(t.notes):"";
-   return head+'<article class="task '+(t.done?"done":"")+'"><input type="checkbox" data-check="'+esc(t.id)+'" aria-label="Mark complete" '+(t.done?"checked":"")+' '+(isOwner?"":"disabled")+'><div class="task-date">'+fmtDate(t.date)+due+'</div><div><h3>'+esc(t.title)+'</h3><p>'+esc(t.category||"Other")+owner+notes+'</p></div><div class="task-tools"><span class="tag">'+(t.done?"Completed":"Pending")+'</span>'+(isOwner?'<button type="button" class="edit-task" data-edit="'+esc(t.id)+'">Edit</button><button type="button" class="delete-task" data-delete="'+esc(t.id)+'">Delete</button>':'')+'</div></article>';
+   return head+'<article class="task '+(t.done?"done":"")+'"><input type="checkbox" data-check="'+esc(t.id)+'" aria-label="Mark complete" '+(t.done?"checked":"")+' '+(isOwner?"":"disabled")+'><div class="task-date">'+dateDisplay+due+'</div><div><h3>'+esc(t.title)+'</h3><p>'+esc(t.category||"Other")+' · '+esc(sideText)+owner+notes+'</p></div><div class="task-tools"><span class="tag">'+(t.done?"Completed":"Pending")+'</span>'+(isOwner?'<button type="button" class="edit-task" data-edit="'+esc(t.id)+'">Edit</button><button type="button" class="delete-task" data-delete="'+esc(t.id)+'">Delete</button>':'')+'</div></article>';
  }).join("");
  list.querySelectorAll("[data-edit]").forEach(el=>el.addEventListener("click",()=>editTask(el.dataset.edit)));
  list.querySelectorAll("[data-delete]").forEach(el=>el.addEventListener("click",async()=>{
@@ -118,9 +127,10 @@ async function persist(){
  }
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render();}));
-["search","categoryFilter","statusFilter"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+["search","categoryFilter","sideFilter","statusFilter"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
 function resetTaskForm(){
  $("taskForm").reset();
+ $("taskTiming").value="date";updateTimingFields();
  $("editingTaskId").value="";
  $("formHeading").textContent="Add a task";
  $("saveTaskBtn").textContent="Add task";
@@ -132,7 +142,11 @@ function editTask(id){
  if(!t)return;
  $("editingTaskId").value=t.id;
  $("taskTitle").value=t.title||"";
+ $("taskSide").value=taskSide(t);
+ $("taskTiming").value=t.timingType||(t.date?"date":"later");
  $("taskDate").value=t.date||"";
+ $("taskMonth").value=t.plannedMonth||"2027-01";
+ updateTimingFields();
  $("taskDue").value=t.due||"";
  const category=$("taskCategory");
  if(t.category&&!Array.from(category.options).some(o=>o.value===t.category)){
@@ -148,11 +162,15 @@ function editTask(id){
  $("taskTitle").focus();
 }
 $("cancelEditBtn").addEventListener("click",resetTaskForm);
+$("taskTiming").addEventListener("change",updateTimingFields);
+updateTimingFields();
 $("taskForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!isOwner)return alert("Please sign in as the owner first.");
  const id=$("editingTaskId").value;
- const updated={title:$("taskTitle").value.trim(),date:$("taskDate").value,due:$("taskDue").value,category:$("taskCategory").value,owner:$("taskOwner").value.trim(),notes:$("taskNotes").value.trim()};
+ const timingType=$("taskTiming").value;
+ const updated={title:$("taskTitle").value.trim(),side:$("taskSide").value,timingType,date:timingType==="date"?$("taskDate").value:"",plannedMonth:timingType==="month"?$("taskMonth").value:"",due:$("taskDue").value,category:$("taskCategory").value,owner:$("taskOwner").value.trim(),notes:$("taskNotes").value.trim()};
+ if(timingType==="date"&&!updated.date)return alert("Please choose an exact date.");
  if(id){
    const index=tasks.findIndex(t=>t.id===id);
    if(index<0)return alert("This task could not be found. Please refresh and try again.");

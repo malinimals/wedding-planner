@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#702438"><title>Ajith Kumar & Malini | Wedding Planner</title>
+<style>
+:root{--maroon:#702438;--deep:#451522;--gold:#c7a05a;--cream:#fff9ef;--paper:#fffdf8;--ink:#302329;--muted:#79696d;--line:#e8d9c3;--green:#537554;--rose:#f4e5e5}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}
+header{background:linear-gradient(135deg,var(--deep),var(--maroon));color:#fff9ef;padding:34px 18px 28px;text-align:center}
+.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#e8cc91}
+h1{font-size:clamp(29px,6vw,48px);font-weight:normal;margin:10px 0 5px}header p{margin:5px;color:#f4e5df}.date-line{font:600 12px Arial,sans-serif;letter-spacing:1px;margin-top:16px}
+.wrap{max-width:1000px;margin:auto;padding:22px 15px 45px}.notice{background:#fff1d2;border:1px solid #e4ce99;border-radius:12px;padding:12px 14px;font:13px/1.5 Arial,sans-serif;color:#654c23;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:13px;text-align:center}.stat strong{display:block;font-size:26px;color:var(--maroon);font-weight:normal}.stat span{font:11px Arial,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:18px 0 12px}input,select,button,textarea{font:14px Arial,sans-serif}input,select,textarea{background:white;border:1px solid var(--line);border-radius:9px;padding:11px;color:var(--ink)}#search{flex:1;min-width:170px}button{border:0;border-radius:9px;padding:11px 14px;cursor:pointer}.primary{background:var(--maroon);color:white}.secondary{background:#f0e4d1;color:var(--deep)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 20px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted)}.tab.active{background:var(--maroon);color:white;border-color:var(--maroon)}
+.section-title{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;margin:25px 0 10px}.section-title h2{font-size:22px;font-weight:normal;margin:0;color:var(--maroon)}.section-title small{font:12px Arial,sans-serif;color:var(--muted)}
+.task{display:grid;grid-template-columns:24px 76px 1fr auto;gap:11px;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px;margin:8px 0}.task input[type=checkbox]{width:18px;height:18px;margin-top:4px;accent-color:var(--green);padding:0}.task-date{font:700 11px/1.5 Arial,sans-serif;color:var(--maroon);background:var(--rose);border-radius:8px;padding:7px 4px;text-align:center}.task h3{font-size:16px;font-weight:normal;margin:0 0 4px}.task p{font:13px/1.5 Arial,sans-serif;color:var(--muted);margin:0;white-space:pre-line}.tag{font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.4px;border-radius:20px;padding:5px 7px;background:#f1e8d8;color:#73592c;white-space:nowrap}.task.done h3{text-decoration:line-through;color:#8b8984}.task.done{opacity:.72}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+#adminPanel{display:none;background:white;border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}#adminPanel h2{font-weight:normal;color:var(--maroon);margin-top:0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid .full{grid-column:1/-1}textarea{width:100%;min-height:65px}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#status{font:12px Arial,sans-serif;color:var(--muted)}footer{text-align:center;color:var(--muted);font:12px Arial,sans-serif;padding:22px}
+@media(max-width:600px){.task{grid-template-columns:22px 62px 1fr;gap:8px;padding:10px}.task .tag{grid-column:3;justify-self:start}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.stat{padding:10px 4px}.stat strong{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Together with our families</div><h1>Ajith Kumar &amp; Malini</h1><p>A little plan for a beautiful beginning</p><p class="date-line">RECEPTION · 17 FEBRUARY 2027 &nbsp; ✦ &nbsp; WEDDING · 18 FEBRUARY 2027</p></header>
+<main class="wrap">
+<div class="notice" id="notice">Preview mode: tasks and checkboxes are saved only in this browser until you complete the free Firebase setup below. Do not share this local file expecting updates to sync between devices.</div>
+<section class="stats"><div class="stat"><strong id="totalCount">0</strong><span>Total tasks</span></div><div class="stat"><strong id="doneCount">0</strong><span>Completed</span></div><div class="stat"><strong id="remainingCount">0</strong><span>Pending</span></div></section>
+<div class="toolbar"><input id="search" type="search" placeholder="Search tasks…"><select id="categoryFilter"><option value="">All categories</option></select><select id="statusFilter"><option value="all">All tasks</option><option value="pending">Pending</option><option value="done">Completed</option></select><button class="secondary" id="loginBtn">Owner sign-in</button><span id="status">Browser-only preview</span></div>
+<div class="tabs"><button class="tab active" data-view="timeline">Timeline</button><button class="tab" data-view="pending">Pending / To-do</button><button class="tab" data-view="done">Completed</button><button class="tab" data-view="all">All tasks</button></div>
+<section id="adminPanel"><h2>Add a task</h2><form id="taskForm"><div class="formgrid">
+<input id="taskTitle" class="full" required placeholder="Task title — e.g. Finalize invitation wording"><input id="taskDate" type="date" required><select id="taskCategory"><option>Family &amp; planning</option><option>Rituals &amp; ceremony</option><option>Invitations</option><option>Gold &amp; jewellery</option><option>Outfits</option><option>Venue &amp; vendors</option><option>Travel &amp; accommodation</option><option>Food &amp; hospitality</option><option>Photography</option><option>Reception</option><option>Wedding day</option><option>Payments</option><option>Other</option></select>
+<input id="taskOwner" placeholder="Responsible person / family"><input id="taskDue" type="date" aria-label="Optional deadline"><textarea id="taskNotes" class="full" placeholder="Notes (optional)"></textarea></div><div class="admin-actions"><button class="primary" type="submit">Add task</button><button class="secondary" type="button" id="exportBtn">Export backup</button></div></form></section>
+<div id="taskList"></div><footer>Made with love, managed together. ♡</footer></main>
+<script>
+/* FREE LIVE SETUP: paste Firebase web config below; enable Firestore + Google sign-in.
+   Then publish this file on GitHub Pages. Configure Firestore rules as described in the accompanying instructions.
+*/
+const firebaseConfig = null; // Replace null with your Firebase project's web config object.
+const OWNER_EMAIL = "replace-with-your-google-email@example.com";
+const KEY="ajithMaliniWeddingTasks_v1";
+const initial=[
+{id:"g1",date:"2026-10-22",title:"Ajith - Pillaiyar Pongal",category:"Rituals & ceremony",owner:"Groom's side",notes:"Listed in the family schedule.",done:false},
+{id:"g2",date:"2026-10-25",title:"Ajith - Kuladeivam Pongal",category:"Rituals & ceremony",owner:"Groom's side",notes:"English rendering of the handwritten Tamil; please confirm the exact ritual name.",done:false},
+{id:"g3",date:"2026-10-30",title:"Ajith - Poovadai Kari (name to confirm)",category:"Rituals & ceremony",owner:"Groom's side",notes:"Transliteration from the handwritten Tamil is uncertain; confirm wording.",done:false},
+{id:"g4",date:"2026-10-31",title:"Ajith - Perumal",category:"Rituals & ceremony",owner:"Groom's side",notes:"Listed in the family schedule.",done:false},
+{id:"g5",date:"2026-11-01",title:"Ajith - Koozh (name to confirm)",category:"Rituals & ceremony",owner:"Groom's side",notes:"Transliteration from the handwritten Tamil is uncertain; confirm wording.",done:false},
+{id:"g6",date:"2026-08-23",title:"Ajith - Invitation-related ritual (wording to confirm)",category:"Invitations",owner:"Groom's side",notes:"Handwritten entry appears to mention invitations and another ritual; please confirm exact wording.",done:true},
+{id:"g7",date:"2026-09-17",title:"Ajith - Collect invitations",category:"Invitations",owner:"Groom's side",notes:"Handwritten entry: பத்திரிக்கை வாங்குவது.",done:true},
+{id:"g8",date:"2026-10-30",title:"Ajith - First invitation at mother's home",category:"Invitations",owner:"Groom's side",notes:"Interpretation of handwritten entry; confirm if needed.",done:false},
+{id:"g9",date:"2026-11-06",title:"Ajith - Invitation at bride's home",category:"Invitations",owner:"Groom's side",notes:"Handwritten entry: பொண்ணு வீடு.",done:false},
+{id:"m1",date:"2026-10-23",title:"Malini - Buy gold for Ajith",category:"Gold & jewellery",owner:"Bride's side",notes:"Added as requested.",done:false},
+{id:"m2",date:"2026-12-05",title:"Malini - Visit native Kuladeivam temple",category:"Rituals & ceremony",owner:"Bride's side",notes:"Added as requested.",done:false},
+{id:"g10",date:"2027-02-12",title:"Ajith - Pandal Kaal ceremony",category:"Rituals & ceremony",owner:"Groom's side",notes:"English rendering of பந்தக்கால்.",done:false}
+];
+let tasks=JSON.parse(localStorage.getItem(KEY)||"null")||initial;let view="timeline",isOwner=false,db=null,auth=null,provider=null,cloudReady=false;
+const $=id=>document.getElementById(id);
+function saveLocal(){localStorage.setItem(KEY,JSON.stringify(tasks))}
+function fmtDate(s){if(!s)return"DATE TBC";return new Date(s+"T12:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short"}).toUpperCase()}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setStatus(s){$("status").textContent=s}
+function render(){
+ $("totalCount").textContent=tasks.length;$("doneCount").textContent=tasks.filter(t=>t.done).length;$("remainingCount").textContent=tasks.filter(t=>!t.done).length;
+ let old=$("categoryFilter").value,cats=[...new Set(tasks.map(t=>t.category).filter(Boolean))].sort();$("categoryFilter").innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option>${esc(c)}</option>`).join("");$("categoryFilter").value=cats.includes(old)?old:"";
+ let q=$("search").value.toLowerCase(),cat=$("categoryFilter").value,st=$("statusFilter").value;
+ let arr=tasks.filter(t=>(!q||(t.title+" "+t.notes+" "+t.owner+" "+t.category).toLowerCase().includes(q))&&(!cat||t.category===cat)&&(st==="all"||(st==="done"?t.done:!t.done))&&(view==="all"||(view==="pending"?!t.done:view==="done"?t.done:true)));
+ arr.sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999"));let last="",list=$("taskList");
+ if(!arr.length){list.innerHTML='<div class="empty">No tasks here. Adjust the filters or add a task.</div>';return}
+ list.innerHTML=arr.map(t=>{let month=t.date?new Date(t.date+"T12:00:00").toLocaleDateString("en-IN",{month:"long",year:"numeric"}):"Date to be confirmed";let head="";if(view==="timeline"&&month!==last){head=`<div class="section-title"><h2>${esc(month)}</h2><small>${arr.filter(x=>(x.date?new Date(x.date+"T12:00:00").toLocaleDateString("en-IN",{month:"long",year:"numeric")}:"Date to be confirmed")===month).length} tasks</small></div>`;last=month}
+ return head+`<article class="task ${t.done?"done":""}"><input type="checkbox" data-check="${esc(t.id)}" aria-label="Mark complete" ${t.done?"checked":""} ${isOwner?"":"disabled"}><div class="task-date">${fmtDate(t.date)}${t.due?`<br><span style="font-weight:normal">Due ${fmtDate(t.due)}</span>`:""}</div><div><h3>${esc(t.title)}</h3><p>${esc(t.category||"Other")}${t.owner?" · "+esc(t.owner):""}${t.notes?"\n"+esc(t.notes):""}</p></div><span class="tag">${t.done?"Completed":"Pending"}</span></article>`}).join("");
+ list.querySelectorAll("[data-check]").forEach(el=>el.addEventListener("change",async()=>{if(!isOwner)return;let t=tasks.find(x=>x.id===el.dataset.check);if(t){t.done=el.checked;await persist();render()}}))
+}
+async function persist(){saveLocal();if(cloudReady&&isOwner){try{await window._setDoc(window._doc(db,"weddingPlanner","main"),{tasks,updatedAt:Date.now()})}catch(e){alert("Cloud save failed: "+e.message)}}}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render()}));
+["search","categoryFilter","statusFilter"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+$("taskForm").addEventListener("submit",async e=>{e.preventDefault();if(!isOwner)return alert("Please sign in as the owner first.");tasks.push({id:crypto.randomUUID(),title:$("taskTitle").value.trim(),date:$("taskDate").value,due:$("taskDue").value,category:$("taskCategory").value,owner:$("taskOwner").value.trim(),notes:$("taskNotes").value.trim(),done:false});await persist();e.target.reset();render()});
+$("exportBtn").addEventListener("click",()=>{let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(tasks,null,2)],{type:"application/json"}));a.download="ajith-malini-wedding-tasks.json";a.click();URL.revokeObjectURL(a.href)});
+$("loginBtn").addEventListener("click",async()=>{if(!cloudReady)return alert("Firebase is not configured yet. Follow the setup steps supplied with this file.");if(!isOwner){try{await window._signIn(auth,provider)}catch(e){alert(e.message)}}else{await window._signOut(auth)}});
+async function startFirebase(){
+ if(!firebaseConfig)return;
+ try{
+ const appmod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+ const authmod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+ const fs=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+ const app=appmod.initializeApp(firebaseConfig);auth=authmod.getAuth(app);provider=new authmod.GoogleAuthProvider();db=fs.getFirestore(app);
+ window._doc=fs.doc;window._setDoc=fs.setDoc;window._onSnapshot=fs.onSnapshot;window._signIn=authmod.signInWithPopup;window._signOut=authmod.signOut;
+ cloudReady=true;$("notice").textContent="Live sync enabled. Sign in with the owner Google account to edit; everyone else can view.";setStatus("Connecting…");
+ fs.onSnapshot(fs.doc(db,"weddingPlanner","main"),snap=>{if(snap.exists()){tasks=snap.data().tasks||[];saveLocal();render()}else{setStatus("First owner sign-in needed") }});
+ authmod.onAuthStateChanged(auth,async user=>{isOwner=!!user&&!!user.email&&user.email.toLowerCase()===OWNER_EMAIL.toLowerCase();$("loginBtn").textContent=user?(isOwner?"Sign out":"Signed in · view only"):"Owner sign-in";$("adminPanel").style.display=isOwner?"block":"none";setStatus(isOwner?"Owner mode":user?"View-only access":"Public view");render();if(isOwner){const ref=fs.doc(db,"weddingPlanner","main");const snap=await fs.getDoc(ref);if(!snap.exists()){await fs.setDoc(ref,{tasks,updatedAt:Date.now()});setStatus("Initial tasks uploaded")}}});
+ }catch(e){$("notice").textContent="Firebase setup needs attention: "+e.message;setStatus("Setup incomplete")}
+}
+render();startFirebase();
+</script>
+</body></html>

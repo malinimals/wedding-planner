@@ -34,8 +34,16 @@ h1{font-size:clamp(29px,6vw,48px);font-weight:normal;margin:10px 0 5px}header p{
 /* FREE LIVE SETUP: paste Firebase web config below; enable Firestore + Google sign-in.
    Then publish this file on GitHub Pages. Configure Firestore rules as described in the accompanying instructions.
 */
-const firebaseConfig = null; // Replace null with your Firebase project's web config object.
-const OWNER_EMAIL = "replace-with-your-google-email@example.com";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCS3JgCEKnA90PEgSTI1VUntqSDQnUf3Qo",
+  authDomain: "ajith-malini-wedding.firebaseapp.com",
+  projectId: "ajith-malini-wedding",
+  storageBucket: "ajith-malini-wedding.firebasestorage.app",
+  messagingSenderId: "166906798319",
+  appId: "1:166906798319:web:7b4dce4f118cd67fdd3b1a"
+};
+const OWNER_EMAIL = "malinivenakt770@gmail.com";
 const KEY="ajithMaliniWeddingTasks_v1";
 const initial=[
 {id:"g1",date:"2026-10-22",title:"Ajith - Pillaiyar Pongal",category:"Rituals & ceremony",owner:"Groom's side",notes:"Listed in the family schedule.",done:false},
